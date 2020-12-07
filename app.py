@@ -220,8 +220,11 @@ def main():
     if(city =='None'):
         ('## Please select a city to continue!')
     else:
-        ('# You have selected the following options ')
-        ('## Your selected city is: %s' %city)
+        ('# You have selected the following options :')
+       
+        ('### City: %s' %city.upper())
+        if(city == 'washington'):
+            ('#### %s city does not have statistics available for Gender and Birth year' %city.upper())
     
         data = load_data(city, month, day)
 
@@ -233,10 +236,21 @@ def main():
 
         if st.button('Trip Duration'):
             st.write(trip_duration_stats(data))
+
+        if st.button('View 1st 5 rows'):
+            st.write(data.head())
+        
+        view_more = st.checkbox('View More Data')
+
+        if view_more:
+            rows = st.text_input('Please enter number of rows', 10)
+            st.write(data.iloc[0:np.int(rows), :])
+
    
         if st.button('Reset'):
             ('Clearning Stats')
-
+        
+        
 ###########################################################################################################
 
 if __name__ == "__main__":
