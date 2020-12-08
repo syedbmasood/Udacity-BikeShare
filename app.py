@@ -7,6 +7,7 @@ Code File
 # Import required packages
 
 
+from altair.vegalite.v4.api import value
 import streamlit as st
 import pandas as pd
 import statistics
@@ -66,14 +67,13 @@ def get_data(city):
 ###########################################################################################################
  
 # Setting the app page with title and a brief description for users
-
+st.markdown('<style>description{color: blue;}',unsafe_allow_html=True)
 st.title('US Bikeshare Data Exploration') 
-st.header('Insights on bikeshare statistics')
-st.text('This app allows you to extracts statistics on bikesharing within 3 US cities.')
-st.text('You have choices where you can select a city, then a particular month or ')
-st.text('all available months, and whole months or particular weekdays within selected month/s.')
+st.header('')
+
 image = Image.open('NyBike.jpg')
 st.image(image)
+st.sidebar.title('Selection Menu')
 
 ###########################################################################################################
 
@@ -224,31 +224,38 @@ def main():
        
         ('### City: %s' %city.upper())
         if(city == 'washington'):
-            ('#### %s city does not have statistics available for Gender and Birth year' %city.upper())
+            st.error('Warning: %s city does not have statistics available for Gender and Birth Year' %city.upper())
     
         data = load_data(city, month, day)
 
-        if st.button('Time Statistics'):
-            st.write(time_stats(data))
+        if (data.empty == True):
+            st.error('%s does not have any data for the month %s and  day %s. Please change your selection for month and day'%(city, month, day))
+        else:
 
-        if st.button(' Station Statistics'):
-            st.write(station_stats(data))
+            if st.button('Time Statistics'):
+                st.write(time_stats(data))
 
-        if st.button('Trip Duration'):
-            st.write(trip_duration_stats(data))
+            if st.button(' Station Statistics'):
+                st.write(station_stats(data))
 
-        if st.button('View 1st 5 rows'):
-            st.write(data.head())
+            if st.button('Trip Duration'):
+                st.write(trip_duration_stats(data))
+
+            if st.button('View first 5 rows'):
+                st.write(data.iloc[0:5,])
         
-        view_more = st.checkbox('View More Data')
+        
+            ch = st.radio('Want to view 5 more rows',('No','Yes'))
+        
+            i = 5
+            while(ch =='Yes'):
+                st.write(data.iloc[i:i+5,])
+                i += 5
+                time.sleep(5)
+            
 
-        if view_more:
-            rows = st.text_input('Please enter number of rows', 10)
-            st.write(data.iloc[0:np.int(rows), :])
-
-   
-        if st.button('Reset'):
-            ('Clearning Stats')
+            if st.button('Reset'):
+                ('Clearning Stats')
         
         
 ###########################################################################################################
